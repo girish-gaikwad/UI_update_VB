@@ -1,0 +1,43 @@
+.side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: auto;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: #f44336;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .side-panel-content {
+    padding: 20px;
+  }
+
+  .servervalues{
+    padding-left: 6%;
+    /* border: solid black; */
+    padding-top: 3%;
+    font-size: 15px;
+    /* display: flex;  */
+    justify-content: space-between;
+  }
+  .assign-button.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  
+  

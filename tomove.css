@@ -1,0 +1,641 @@
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .popup-content {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  
+  }
+  
+  .popup-content h2 {
+    margin-bottom: 10px;
+  }
+  
+  .popup-buttons {
+   
+    text-align: right;
+  }
+  
+  .popup-buttons button {
+    padding: 3px 18px;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-image: linear-gradient(#3690ea, #1976d2);
+    color: white;
+  }
+  
+  .popup-buttons button:last-child {
+    background-color: #6c757d;
+  }
+  .event-form label{
+      color: #2B3674;
+  }
+  .event-form input {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .event-form .datebox{
+      display: flex;
+  
+  }
+  
+  .event-type{
+      margin: 10px 0;
+  }
+  .event-type input[type="radio"] {
+      display: none;
+  }
+  
+  .event-type label {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: rgb(80, 80, 80);
+    margin: 5px;
+    display: inline-block;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .event-type input[type="radio"]:checked + label {
+    background: linear-gradient(#3690ea, #1976d2);
+    color: white;
+  }
+  
+  
+  
+  /* venue requirement css */
+  .grid-container {
+   gap: 3%;
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+    width: 100%;
+    height: 85%;
+  }
+  .flex{
+    display: flex;
+    height: 80%;
+    
+    justify-content: center;
+    align-items: center;
+  }
+  .itemschoosing{
+    display: flex;
+    flex-direction: column;
+    gap: 2%;
+    height: 100%;
+  }
+  .circlex {
+    background-color: #f0f0f0;
+    padding: 20px;
+    height: 80px;
+    width:  80px;
+    border-radius: 50%;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .circlex.selected {
+    border: 2px solid #2B3674; 
+  }
+  
+  @media (max-width: 1200px) {
+    .grid-container {
+      grid-template-columns: repeat(6, 1fr); /* Adjust to 6 columns for smaller screens */
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .grid-container {
+      grid-template-columns: repeat(5, 1fr); /* Adjust to 5 columns for even smaller screens */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .grid-container {
+      grid-template-columns: repeat(4, 1fr); /* Adjust to 4 columns for small screens */
+    }
+  }
+  .item-name{
+    padding-left: 15px;
+  
+  }
+  @media (max-width: 400px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns for very small screens */
+    }
+  }
+  .circlex{
+  
+     object-fit: contain;
+  }
+  
+  
+  
+
+  
+  
+  
+  /* Accomodation popup css start */
+  .accomodation{
+    height: 85%;
+    max-height: 630px;
+    width: 60%;
+  }
+  
+  
+  .ctd{
+    background-color: #fbfbfb;
+    border-radius: 11px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .pair{
+    border-radius:5px ;
+    background-color: #dcfaf8;
+    border:2px #5ce9de solid;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .alone{
+    border-radius:5px ;
+    background-color: #ffcfe0;
+    border:2px #fb73a0 solid;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .options{
+    background-color: #fbfbfb;
+    border-radius: 8px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .undoalone{
+    border-radius:5px ;
+    background-color: #ffcfe0;
+    border:2px #fb73a0 solid;
+   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .arrow1{
+    position: absolute;
+    top: 16.5%;
+    left: 23%;
+  }
+  .iconarrow{
+    transform: rotateY(180deg);
+  width: 45px;
+  cursor: pointer;
+  }
+  .iconarrowR{
+    width: 45px;
+  cursor: pointer;
+  }
+  .boss{
+    /* border: #000000 solid; */
+    margin: 0;  
+    display: flex;
+    justify-content: center;
+  }
+  .sus{
+    /* background-color: #ff0000; */
+    position: absolute;
+    top: 65px;
+  }
+  .guestNames{
+  /* background-color: #1976d2; */
+    width: 120px;
+    height: 50px;
+  
+    position: absolute  ;
+    top: -63px;
+    left:25%;
+  }
+  .guestname{
+    position: relative;
+    top: -50px;
+  }
+  .guestImage {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  .cardsarrow{
+    display: flex;
+    justify-content: center;
+    align-items: center ;border-radius: 8px;
+  background-color: #e7e8f2;
+  height: 35px;
+  width: 35px;
+  }
+  /* Accomodation popup css end */
+  
+  /* Transport popup css strat  */
+  
+  .transport{
+    width: 60%;
+    height: 85%;
+    max-height: 630px;
+  }
+  .optionsjoin{
+    border-radius:5px ;
+    background-color: #dcfaf8;
+    border:2px #5ce9de solid;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    /* width: 25px; */
+    height: 23px;
+    /* padding: 2px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .a{
+    /* background-color: #1976d2; */
+    height: 120px;
+    position: relative;
+    top: 48px;
+  }
+  .transportsave{
+    text-align: end;
+    /* align-content: center; */
+    margin-top:9% ;
+    /* border: solid black; */
+    /* position: fixed; */
+    bottom: 5px;
+  }
+  
+  
+  
+  /* Transport popup css end  */
+  
+  
+  
+  
+  sx={{
+    ".MuiOutlinedInput-notchedOutline": {
+      borderWidth: "2px",
+      borderColor: "#dfeaf3",
+      borderRadius:"8px",
+
+      ".MuiSelect-select": {
+        padding: "8px 14px", // Adjust padding for the inner select text
+      },
+    },
+  }}
+
+  InputProps={{
+    sx: {
+      height: 40, // Set the desired height here
+      padding: "0px 14px", // Adjust padding to fit the height
+    },
+  }}
+
+  className="p-2 w-72 rounded-lg   focus:outline-none"
+  style={{
+    borderColor: "#e1eaf1",
+    borderWidth: "2px",
+    borderStyle: "solid",
+  }}
+
+
+  className="text-[#5c6493] "
+
+
+  const pairedman = findPair(cardno + 1, groups);
+
+
+
+
+  <div
+  className="undoalone"
+  onClick={() => handleLeaveGroup(guest.id)}
+>
+  <GroupRemove /> Leave Group
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<ToggleButtonGroup
+            className="h-10 rounded-lg"
+              value={tripType}
+              exclusive
+              onChange={handleTripTypeChange}
+              aria-label="trip type"
+              fullWidth
+            >
+              <ToggleButton value="Both" className="bg-[#f5f6f8] flex gap-2"> 
+                <div className="bg-[#567f9a] p-1 rounded-lg text-white">
+                <LuArrowLeftRight />
+                </div>
+                 Both</ToggleButton>
+              <ToggleButton value="Onward" className="bg-[#f5f6f8] flex gap-2"> 
+                <div className="bg-[#ff5b13] p-1 rounded-lg text-white">
+                <GoArrowRight />
+                </div>
+                Onward</ToggleButton>
+              <ToggleButton value="Return" className="bg-[#f5f6f8] flex gap-2">
+                <div className="bg-[#7983ff] p-1 rounded-lg text-white">
+                <GoArrowLeft />
+                </div>
+                
+                Return</ToggleButton>
+            </ToggleButtonGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div className="w-full h-full flex flex-col">
+            <div className="w-full h-16 bg-gray-200 px-4 py-2 flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Pending List</h2>
+              <CiSquareMore style={{ height: "30px", width: "30px" }} />
+            </div>
+      
+            <div className="w-full h-full overflow-y-auto">
+              {Object.keys(groupedEvents).map((dateLabel) => (
+                <div
+                  key={dateLabel}
+                  className="w-full py-4 px-4 border-b border-gray-300"
+                >
+                  <div className="w-full flex justify-between items-center">
+                    <p className="text-lg font-bold">{dateLabel}</p>
+                    <p className="text-gray-600">{groupedEvents[dateLabel].length} events</p>
+                  </div>
+      
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                    {groupedEvents[dateLabel].map((event) => (
+                      <div
+                        key={event.id}
+                        className="w-full bg-white rounded-lg shadow-md p-4"
+                      >
+                        <div className="flex items-center">
+                          <img
+                            src={event.image}
+                            className="w-12 h-12 mr-4"
+                            alt="random"
+                          />
+                          <div>
+                            <p className="text-lg font-bold">{event.faculty_name}</p>
+                            <p className="text-gray-600">{event.mobile_number}</p>
+                          </div>
+                        </div>
+      
+                        <div className="mt-4">
+                          <p className="text-gray-600">
+                            Start: {formatDateTime(event.start_at)}
+                          </p>
+                          <p className="text-gray-600">
+                            End: {formatDateTime(event.end_at)}
+                          </p>
+                        </div>
+      
+                        <div className="mt-4">
+                          {(() => {
+                            const statuses = [
+                              event.event_status,
+                              event.event_guest_status,
+                              event.accommodation_status,
+                              event.transport_status,
+                              event.event_participants_status,
+                              event.venue_booking_status,
+                              event.venue_requirement_status,
+                              event.car_request_status,
+                              event.food_request_status,
+                              event.refreshment_request_status,
+                            ];
+      
+                            if (
+                              statuses.every((status) => status === 1 || status === 0)
+                            ) {
+                              return (
+                                <p className="text-gray-600">
+                                  <img
+                                    src={Pending} // Replace with the appropriate icon for "Pending"
+                                    alt="Pending"
+                                    className="w-4 h-4 mr-2"
+                                  />
+                                  Pending
+                                </p>
+                              );
+                            } else if (
+                              statuses.some((status) => status === 3) ||
+                              statuses.every((status) => status === 2)
+                            ) {
+                              return (
+                                <p className="text-gray-600">
+                                  <img
+                                    src={Assigned} // Replace with the appropriate icon for "Assigned"
+                                    alt="Assigned"
+                                    className="w-4 h-4 mr-2"
+                                  />
+                                  Assigned
+                                </p>
+                              );
+                            } else if (statuses.some((status) => status === 2)) {
+                              return (
+                                <p className="text-gray-600">
+                                  <img
+                                    src={InProgress} // Replace with the appropriate icon for "In Progress"
+                                    alt="In Progress"
+                                    className="w-4 h-4 mr-2"
+                                  />
+                                  In Progress
+                                </p>
+                              );
+                            } else if (statuses.every((status) => status === 3)) {
+                              return (
+                                <p className="text-gray-600">
+                                  <img
+                                    src={Completed} // Replace with the appropriate icon for "Completed"
+                                    alt="Completed"
+                                    className="w-4 h-4 mr-2"
+                                  />
+                                  Completed
+                                </p>
+                              );
+                            }
+                            return null;
+                          })()}
+                        </div>
+      
+                        <div className="mt-4 text-right">
+                          <button
+                            onClick={() => handleViewClick(event)}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                          >
+                            View
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          import React from 'react';
+
+const appointments = [
+  {
+    id: 1,
+    day: "Tomorrow",
+    faculty: "Mr.Ramesh",
+    contact: "8965585541",
+    start: "01-7-2024 - 08.00 am",
+    end: "02-7-2024 - 10.00 am",
+    status: "In-progress",
+    icon: "💼", // You can replace this with an actual image.
+  },
+  {
+    id: 2,
+    day: "Tomorrow",
+    faculty: "Mr.Ramesh",
+    contact: "8965585541",
+    start: "01-7-2024 - 08.00 am",
+    end: "02-7-2024 - 10.00 am",
+    status: "In-progress",
+    icon: "💰",
+  },
+  // Add more appointments as needed
+];
+
+const AppointmentCard = ({ appointment }) => (
+  <div className="flex items-center justify-between p-4 bg-white shadow rounded-lg mb-4">
+    {/* Icon */}
+    <div className="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-full">
+      <span className="text-2xl">{appointment.icon}</span>
+    </div>
+
+    {/* Faculty Details */}
+    <div className="flex-grow ml-4">
+      <h4 className="font-bold text-gray-800">{appointment.faculty}</h4>
+      <p className="text-gray-500">{appointment.contact}</p>
+      <p className="text-gray-500">Start: {appointment.start}</p>
+      <p className="text-gray-500">End: {appointment.end}</p>
+    </div>
+
+    {/* Status and Action */}
+    <div className="flex items-center space-x-4">
+      <span className="text-blue-600 font-semibold">{appointment.status}</span>
+      <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+        View
+      </button>
+    </div>
+  </div>
+);
+
+const App = () => {
+  return (
+    <div className="p-8 bg-gray-50 min-h-screen">
+      <h2 className="text-xl font-semibold mb-6">Pending List</h2>
+
+      {/* Tomorrow Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Tomorrow</h3>
+        {appointments
+          .filter(appointment => appointment.day === "Tomorrow")
+          .map(appointment => (
+            <AppointmentCard key={appointment.id} appointment={appointment} />
+          ))}
+      </div>
+
+      {/* 1 day to go Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4 mt-8">1 day to go</h3>
+        {appointments
+          .filter(appointment => appointment.day === "1 day to go")
+          .map(appointment => (
+            <AppointmentCard key={appointment.id} appointment={appointment} />
+          ))}
+      </div>
+    </div>
+  );
+};
+
+export default App;

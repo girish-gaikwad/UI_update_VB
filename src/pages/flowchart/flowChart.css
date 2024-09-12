@@ -1,0 +1,161 @@
+.flowname {
+  font-size: 12px;
+  margin-top: 8px;
+
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  color: #2b3674;
+}
+
+.logoimage div img {
+  width: 80%;
+  height: 85%;
+  margin: 5px 0 5px 1px;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+}
+.tree {
+  display: flex;
+  /* border: #2b3674 solid; */
+  justify-content: center;
+  align-items: center;
+  overflow: scroll; /* Enable scrolling */
+  scrollbar-width: none; /* For Firefox: hide scrollbar */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge: hide scrollbar */
+}
+
+/* For WebKit-based browsers (Chrome, Safari) */
+.tree::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+.tree ul {
+  padding-top: 12px;
+  position: relative;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+}
+
+.tree li {
+  float: left;
+  text-align: center;
+  list-style-type: none;
+  position: relative;
+  padding-top: 10px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  margin: 0 15px 0 15px;
+}
+/* flow chart horizontal line */
+.tree li::before,
+.tree li::after {
+  content: "";
+  font-size: 50px;
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border-top: 2px dotted #ccc;
+  width: 50%;
+  height: 10px;
+  margin-top: 7px;
+}
+
+/* flow chart top-right line style */
+.tree li::after {
+  left: 50%;
+  border-left: 2px dotted #ccc;
+}
+
+/* flow chart top-left line style */
+.tree li:last-child::before {
+  border-right: 2px dotted #ccc;
+  border-radius: 0 5px 0 0;
+  width: 65%;
+  padding: 1px;
+}
+/* flowchart bottom line */
+.tree ul ul::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border-left: 2px dotted #ccc;
+  width: 0;
+  height: 15px;
+  margin-top: 5px;
+}
+
+.tree li:only-child {
+  padding-top: 8px;
+}
+
+.tree li:first-child::before,
+.tree li:last-child::after {
+  border: 0 none;
+  width: 0;
+}
+
+.tree li:first-child::after {
+  border-radius: 5px 0 0 0;
+  -webkit-border-radius: 5px 0 0 0;
+  -moz-border-radius: 5px 0 0 0;
+}
+
+.logoimage {
+  width: 95px;
+  height: 100px;
+  margin: 10px 50px 0 50px;
+  padding: 0;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 11.05px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  transition: all 0.5s ease;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+}
+
+.formbox {
+  width: 100px;
+  height: 70px;
+  border-radius: 11.05px;
+}
+.confirmsubmit {
+  background-color: transparent;
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: right;
+}
+.confirmsubmit button {
+  /* height: 35px; */
+  padding: 0px 10px;
+}
+.tree li div:hover + ul li::after,
+.tree li div:hover + ul li::before,
+.tree li div:hover + ul::before,
+.tree li div:hover + ul ul::before {
+  border-color: black;
+  border-width: 2px;
+}
+.redProgress .MuiCircularProgress-circle {
+  color: #fa6666 !important;
+}
+.grayProgress .MuiCircularProgress-circle {
+  color: #ededed !important;
+}
+@media (max-width: 1250px) {
+  .tree ul {
+    overflow-x: hidden;
+  }
+  .tree li {
+    margin: 0;
+  }
+}
+.relative {
+  position: absolute;
+  top: 15%;
+  right: 2%;
+}

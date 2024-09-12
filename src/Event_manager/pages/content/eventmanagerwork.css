@@ -1,0 +1,9 @@
+/* Custom scrollbar hiding while keeping functionality */
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
