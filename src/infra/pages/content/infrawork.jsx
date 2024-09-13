@@ -8,6 +8,7 @@ import money from "/images/money.png";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NAVX from "../../../pages/components/nav";
+import ClassroomDropdown from "./class";
 
 // Precomputed image selection function
 const getRandomImage = () => {
@@ -86,8 +87,8 @@ function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
       </div>
       <div className="flex justify-end pb-1  border-b  bg-white">
         <div className="flex w-full  text-[#728ebe]  justify-around ">
-          <p  className=" relative top-0 left-3">faculty</p>
-          <p  className=" relative top-0 left-10">start</p>
+          <p className=" relative top-0 left-3">faculty</p>
+          <p className=" relative top-0 left-10">start</p>
           <p className=" relative top-0 -left-2">Venue Required</p>
           <p className=" relative top-0 -left-12">Handled by</p>
           <p className="relative top-0 -left-8">venue</p>
@@ -104,7 +105,7 @@ function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
             </p>
           </div>
 
-          <div className="border-[#e8e8e8] border px-2 rounded-lg ">
+          <div className="border-[#e8e8e8] mb-3 border px-2 rounded-lg ">
             <div className="w-full my-4">
               {events.tomorrow.map((event) => (
                 <div
@@ -116,98 +117,66 @@ function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
                     <img
                       src={event.image}
                       className="w-12 h-12 mr-4"
-                        alt="random"
+                      alt="random"
                     />
                     {/* </div> */}
-                    <div >
+                    <div>
                       <p className="text-md ">{event.name}</p>
-                      <p className="text-[#728ebe]" >{event.contact}</p>
+                      <p className="text-[#728ebe]">{event.contact}</p>
                     </div>
                   </div>
 
+                  <div className=" w-full items-center  flex justify-between">
+                    <p className="text-gray-600"> {event.dateTime} </p>
 
-
-                    <div className=" w-full items-center  flex justify-between">
-                      
-                    <p className="text-gray-600">    {event.dateTime} </p>
-                 
-
-
-                  <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                    <div className="flex">
-                      <select className="bg-white w-full rounded-md">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                      </select>
-                      <div
-                        className="infrawork-button-with-icon"
-                        onClick={() => handleButtonClick(event.id, 1)}
-                      >
-                        <i className="icon">
-                          <IoSendSharp size={20} />
-                        </i>
+                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                      <div className="flex">
+                        <select className="bg-white w-full rounded-md">
+                          <option value="option1">Option 1</option>
+                          <option value="option2">Option 2</option>
+                          <option value="option3">Option 3</option>
+                        </select>
+                        <div
+                          className="infrawork-button-with-icon"
+                          onClick={() => handleButtonClick(event.id, 1)}
+                        >
+                          <i className="icon">
+                            <IoSendSharp size={20} />
+                          </i>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-
-
-                  <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                    <div className="flex">
-                      <select className="bg-white w-full rounded-md">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                      </select>
-                      <div
-                        className="infrawork-button-with-icon"
-                        onClick={() => handleButtonClick(event.id, 2)}
-                      >
-                        <i className="icon">
-                          <IoSendSharp size={20} />
-                        </i>
+                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                      <div className="flex">
+                        <select className="bg-white w-full rounded-md">
+                          <option value="option1">Option 1</option>
+                          <option value="option2">Option 2</option>
+                          <option value="option3">Option 3</option>
+                        </select>
+                        <div
+                          className="infrawork-button-with-icon"
+                          onClick={() => handleButtonClick(event.id, 2)}
+                        >
+                          <i className="icon">
+                            <IoSendSharp size={20} />
+                          </i>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                    <div className=" border w-56 border-[#c6c5c9] rounded-md">
-                    <div className="flex " >
-                      <select className="bg-white w-full rounded-md">
-                        <option value="option1">Classroom </option>
-                      </select>
-                      <div
-                        className="infrawork-button-with-icon"
-                        onClick={() => handleButtonClick(event.id, 3)}
-                      >
-                        <i className="icon">
-                          <IoSendSharp size={20} />
-                        </i>
-                      </div>
+                    <div className=" border  border-[#c6c5c9] rounded-md">
+                      <ClassroomDropdown
+                        handleButtonClick={handleButtonClick}
+                        eventid={event.id}
+                      />
                     </div>
-                  </div>
-
-
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-
-        
-{/* dummy for show  */}
-
-<div className="w-full  py-4 px-4  ">
-          <div className="w-full flex justify-between items-center">
-            {/* <p className="text-[#2d5dd9]">{dateLabel}</p> */}
-            <p className="text-[#2d5dd9]">Tommorrow</p>
-            <p className="text-gray-600">
-              {/* {groupedEvents[dateLabel].length} events */}3 events
-            </p>
-          </div>
-
-          <div className="border-[#e8e8e8] border px-2 rounded-lg ">
+          <div className="border-[#e8e8e8] mb-3 border px-2 rounded-lg ">
             <div className="w-full my-4">
               {events.tomorrow.map((event) => (
                 <div
@@ -219,89 +188,72 @@ function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
                     <img
                       src={event.image}
                       className="w-12 h-12 mr-4"
-                        alt="random"
+                      alt="random"
                     />
                     {/* </div> */}
-                    <div >
+                    <div>
                       <p className="text-md ">{event.name}</p>
-                      <p className="text-[#728ebe]" >{event.contact}</p>
+                      <p className="text-[#728ebe]">{event.contact}</p>
                     </div>
                   </div>
 
+                  <div className=" w-full items-center  flex justify-between">
+                    <p className="text-gray-600"> {event.dateTime} </p>
 
-
-                    <div className=" w-full items-center  flex justify-between">
-                      
-                    <p className="text-gray-600">    {event.dateTime} </p>
-                 
-
-
-                  <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                    <div className="flex">
-                      <select className="bg-white w-full rounded-md">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                      </select>
-                      <div
-                        className="infrawork-button-with-icon"
-                        onClick={() => handleButtonClick(event.id, 1)}
-                      >
-                        <i className="icon">
-                          <IoSendSharp size={20} />
-                        </i>
+                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                      <div className="flex">
+                        <select className="bg-white w-full rounded-md">
+                          <option value="option1">Option 1</option>
+                          <option value="option2">Option 2</option>
+                          <option value="option3">Option 3</option>
+                        </select>
+                        <div
+                          className="infrawork-button-with-icon"
+                          onClick={() => handleButtonClick(event.id, 1)}
+                        >
+                          <i className="icon">
+                            <IoSendSharp size={20} />
+                          </i>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-
-
-                  <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                    <div className="flex">
-                      <select className="bg-white w-full rounded-md">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                      </select>
-                      <div
-                        className="infrawork-button-with-icon"
-                        onClick={() => handleButtonClick(event.id, 2)}
-                      >
-                        <i className="icon">
-                          <IoSendSharp size={20} />
-                        </i>
+                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                      <div className="flex">
+                        <select className="bg-white w-full rounded-md">
+                          <option value="option1">Option 1</option>
+                          <option value="option2">Option 2</option>
+                          <option value="option3">Option 3</option>
+                        </select>
+                        <div
+                          className="infrawork-button-with-icon"
+                          onClick={() => handleButtonClick(event.id, 2)}
+                        >
+                          <i className="icon">
+                            <IoSendSharp size={20} />
+                          </i>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                    <div className=" border w-56 border-[#c6c5c9] rounded-md">
-                    <div className="flex " >
-                      <select className="bg-white w-full rounded-md">
-                        <option value="option1">Classroom </option>
-                      </select>
-                      <div
-                        className="infrawork-button-with-icon"
-                        onClick={() => handleButtonClick(event.id, 3)}
-                      >
-                        <i className="icon">
-                          <IoSendSharp size={20} />
-                        </i>
-                      </div>
+                    <div className=" border  border-[#c6c5c9] rounded-md">
+                      <ClassroomDropdown
+                        handleButtonClick={handleButtonClick}
+                        eventid={event.id}
+                      />
                     </div>
-                  </div>
-
-
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+
+
+
         </div>
 
-
-
-
-
+        {/* dummy for show  */}
       </div>
     </div>
   );

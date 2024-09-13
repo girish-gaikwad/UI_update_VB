@@ -639,3 +639,135 @@ const App = () => {
 };
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div className="w-full  py-4 px-4  ">
+          <div className="w-full flex justify-between items-center">
+            {/* <p className="text-[#2d5dd9]">{dateLabel}</p> */}
+            <p className="text-[#2d5dd9]">Tommorrow</p>
+            <p className="text-gray-600">
+              {/* {groupedEvents[dateLabel].length} events */}3 events
+            </p>
+          </div>
+
+          <div className="border-[#e8e8e8] border px-2 rounded-lg ">
+            <div className="w-full my-4">
+              {events.tomorrow.map((event) => (
+                <div
+                  key={event.id}
+                  className="w-full bg-white border border-[#e8e8e8] flex mb-2  rounded-lg  p-2"
+                >
+                  <div className="flex items-center w-[30%] ">
+                    {/* <div className="infrawork-random-img"> */}
+                    <img
+                      src={event.image}
+                      className="w-12 h-12 mr-4"
+                        alt="random"
+                    />
+                    {/* </div> */}
+                    <div >
+                      <p className="text-md ">{event.name}</p>
+                      <p className="text-[#728ebe]" >{event.contact}</p>
+                    </div>
+                  </div>
+
+
+
+                    <div className=" w-full items-center  flex justify-between">
+                      
+                    <p className="text-gray-600">    {event.dateTime} </p>
+                 
+
+
+                  <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                    <div className="flex">
+                      <select className="bg-white w-full rounded-md">
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                      </select>
+                      <div
+                        className="infrawork-button-with-icon"
+                        onClick={() => handleButtonClick(event.id, 1)}
+                      >
+                        <i className="icon">
+                          <IoSendSharp size={20} />
+                        </i>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                    <div className="flex">
+                      <select className="bg-white w-full rounded-md">
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                      </select>
+                      <div
+                        className="infrawork-button-with-icon"
+                        onClick={() => handleButtonClick(event.id, 2)}
+                      >
+                        <i className="icon">
+                          <IoSendSharp size={20} />
+                        </i>
+                      </div>
+                    </div>
+                  </div>
+
+                    <div className=" border w-56 border-[#c6c5c9] rounded-md">
+                    <div className="flex " >
+                      <select className="bg-white w-full rounded-md">
+                        <option value="option1">Classroom </option>
+                      </select>
+                      <div
+                        className="infrawork-button-with-icon"
+                        onClick={() => handleButtonClick(event.id, 3)}
+                      >
+                        <i className="icon">
+                          <IoSendSharp size={20} />
+                        </i>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
