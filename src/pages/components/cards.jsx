@@ -1,7 +1,7 @@
 import React from "react";
 
 const Card = ({ event }) => {
-  console.log(event);
+  // console.log(event);
 
   const formatDate = (isoString) => {
     const months = [

@@ -71,7 +71,7 @@ const treeData = [
   },
 ];
 
-const EventDetailsriser = ({ selectedEvent, user }) => {
+const EventDetailsriser = ({ user }) => {
   const { id: event_id } = useParams(); // Extract the id from the URL using useParams
   const [isEventCompleted, setIsEventCompleted] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -674,7 +674,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (item.id === "Venue_Requirements") {
         // setSelectedItem(item.id);
         setSidePanelContent(
-          <div className="border w-full px-3">
+          <div className="border w-full px-3 h-[430px] bg-[#fff]">
             <p className="text-center text-[#4b91f1] font-semibold my-2 ">
               Requirements
             </p>
@@ -698,7 +698,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               Venue Requirements
             </p>
 
-            <div className=" overflow-y-auto h-[200px] ">
+            <div className=" overflow-y-auto h-[158px] ">
               {eventDetailsArray
                 .filter((item) => item.value > 0) // Filter items with value > 0
                 .map((item, index) => (
@@ -1133,7 +1133,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             </div>
 
             <div className=" bg-white border flex gap-4 absolute bottom-10 w-60 right-20 pr-6  ">
-              {user !== "eventmanager" ? (
+              {user !== "user" ? (
                 <Link to={"/"}>
                   <button
                     className="bg-gray-400 text-white py-1 px-4 rounded-lg"
@@ -1228,7 +1228,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
 
             //   {recontent}
             // </div>
-            <Popup closePopup={closePopup} selectedItem={selectedItem} />
+          <Popup closePopup={closePopup} selectedItem={selectedItem} event={event} GuestData={GuestData} SpecialRequestData={SpecialRequestData} />
           )}
         </div>
       </div>

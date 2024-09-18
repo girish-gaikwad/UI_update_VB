@@ -133,13 +133,13 @@
   /* height: 35px; */
   padding: 0px 10px;
 }
-.tree li div:hover + ul li::after,
+/* .tree li div:hover + ul li::after,
 .tree li div:hover + ul li::before,
 .tree li div:hover + ul::before,
 .tree li div:hover + ul ul::before {
   border-color: black;
   border-width: 2px;
-}
+} */
 .redProgress .MuiCircularProgress-circle {
   color: #fa6666 !important;
 }

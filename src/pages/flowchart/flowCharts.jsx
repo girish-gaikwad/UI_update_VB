@@ -150,7 +150,7 @@ const TreeStructure = () => {
   const [selectedGuest, setSelectedGuest] = useState(null);
   const [startStep, setStartStep] = useState(0);
 
-  const mergearray = [...groups, ...aloneGuests];
+  const mergearray = [...groups, ...aloneGuests];  
 
   const [VenueData, setVenueData] = useState({
     event_id: "",
@@ -189,7 +189,7 @@ const TreeStructure = () => {
   const [Tgroups, TsetGroups] = useState([]);
   const [TaloneGuests, TsetAloneGuests] = useState([]);
 
-  const transportmergearray = [...Tgroups, ...TaloneGuests];
+  const transportmergearray = [...Tgroups, ...TaloneGuests];  
 
   const [soupData, setSoupData] = useState({
     event_id: "",
@@ -215,8 +215,6 @@ const TreeStructure = () => {
     quantity: 0,
     refreshment_request_status: 0,
   });
-
-  console.log(cards);
 
   const confirm = async () => {
     setLoading(true);
@@ -252,266 +250,278 @@ const TreeStructure = () => {
       );
       const invitees_id = inviteesResponse.data.invitees_id;
       // console.log("Created Invitees with ID:", invitees_id);
+      // if (cards[0].guest_status === 1) {
+        const updatedGuests = cards.map((card) => ({
+          ...card,
+          event_id,
+          invitees_id,
+        }));
 
-      const updatedGuests = cards.map((card) => ({
-        ...card,
-        event_id,
-        invitees_id,
-      }));
+        // console.log("Prepared Guest Data:", updatedGuests);
 
-      // console.log("Prepared Guest Data:", updatedGuests);
+        const guestResponse = await axios.post(
+          "http://localhost:8000/post/eventguest",
+          updatedGuests
+        );
+      // }
+        // console.log("Guest API Response:", guestResponse.data);
 
-      const guestResponse = await axios.post(
-        "http://localhost:8000/post/eventguest",
-        updatedGuests
-      );
-
-      // console.log("Guest API Response:", guestResponse.data);
-
-      const unsortedGuestIdsArray = guestResponse.data.guest_id;
-      const guestIdsArray = unsortedGuestIdsArray.slice().sort((a, b) => a - b);
-
-      // console.log(guestIdsArray.join(", "));
+        const unsortedGuestIdsArray = guestResponse.data.guest_id;
+        const guestIdsArray = unsortedGuestIdsArray
+          .slice()
+          .sort((a, b) => a - b);
+        // console.log(guestIdsArray.join(", "));
 
       const formatDateTime = (isoString) => {
         return isoString
           ? `${isoString.replace("T", " ").split(".")[0]}`
           : null;
       };
+        // Create a new array for combineaccommodation data
+        const CombineAccommodationData = [];
 
-      // Create a new array for combineaccommodation data
-      const CombineAccommodationData = [];
-
-      mergearray.forEach((preference, index) => {
-        if (Array.isArray(preference)) {
-          // Pairing logic
-          const [firstGuestIndex, secondGuestIndex] = preference.map(
-            (p) => p - 1
-          );
-
-          CombineAccommodationData.push(
-            {
-              event_id: "",
-              guest_id: guestIdsArray[firstGuestIndex],
-              is_alone: false,
-              pair_with: guestIdsArray[secondGuestIndex],
-              arrival_at: formatDateTime(cards[firstGuestIndex].arrival_at), // Formatting arrival_at
-              departure_at: formatDateTime(cards[firstGuestIndex].departure_at), // Formatting departure_at
-              accommodation_venue: cards[firstGuestIndex].accommodation_venue, // Adding accommodation_venue
-              combine_accommodation_status:
-                cards[firstGuestIndex].combine_accommodation_status,
-            },
-            {
-              event_id: "",
-              guest_id: guestIdsArray[secondGuestIndex],
-              is_alone: false,
-              pair_with: guestIdsArray[firstGuestIndex],
-              arrival_at: formatDateTime(cards[secondGuestIndex].arrival_at), // Formatting arrival_at
-              departure_at: formatDateTime(
-                cards[secondGuestIndex].departure_at
-              ), // Formatting departure_at
-              accommodation_venue: cards[secondGuestIndex].accommodation_venue, // Adding accommodation_venue
-              combine_accommodation_status:
-                cards[secondGuestIndex].combine_accommodation_status,
-            }
-          );
-        } else {
-          // Alone logic
-          const guestIndex = preference - 1;
-          CombineAccommodationData.push({
-            event_id: "",
-            guest_id: guestIdsArray[guestIndex],
-            is_alone: true,
-            pair_with: null,
-            arrival_at: formatDateTime(cards[guestIndex].arrival_at), // Formatting arrival_at
-            departure_at: formatDateTime(cards[guestIndex].departure_at), // Formatting departure_at
-            accommodation_venue: cards[guestIndex].accommodation_venue, // Adding accommodation_venue
-            combine_accommodation_status:
-              cards[guestIndex].combine_accommodation_status,
-          });
-        }
-      });
-
-      const updatedCombineAccommodation = CombineAccommodationData.map(
-        (data) => ({
-          ...data,
-          event_id: event_id,
-        })
-      );
-      // console.log("Accommodation Data:", updatedCombineAccommodation);
-
-      const CombineAccommodationResponse = await axios.post(
-        "http://localhost:8000/post/combineaccommodation",
-        updatedCombineAccommodation
-      );
-
-      const unsortedCombineAccommodationIdArray =
-        CombineAccommodationResponse.data.CombineAccommodation_id;
-      const CombineAccommodationIdArray = unsortedCombineAccommodationIdArray
-        .slice()
-        .sort((a, b) => a - b);
-
-      // console.log(CombineAccommodationIdArray);
-      const CombineTransportData = [];
-
-      transportmergearray.forEach((preference, index) => {
-        if (Array.isArray(preference)) {
-          if (preference.length === 3) {
-            // Three-member pairing logic
-            const [firstGuestIndex, secondGuestIndex, thirdGuestIndex] =
-              preference.map((p) => p - 1);
-
-            CombineTransportData.push(
-              {
-                event_id: "",
-                guest_id: guestIdsArray[firstGuestIndex],
-                is_alone: false,
-                pair_with1: guestIdsArray[secondGuestIndex],
-                pair_with2: guestIdsArray[thirdGuestIndex],
-                travel_type: cards[firstGuestIndex].travel_type,
-                vehicle_type: cards[firstGuestIndex].vehicle_type,
-                t_arrival_at: formatDateTime(
-                  cards[firstGuestIndex].t_arrival_at
-                ),
-                t_departure_at: formatDateTime(
-                  cards[firstGuestIndex].t_depature_at
-                ),
-                from_place: cards[firstGuestIndex].from_place,
-                to_place: cards[firstGuestIndex].to_place,
-                r_from_place: cards[firstGuestIndex].r_from_plcae,
-                r_to_place: cards[firstGuestIndex].r_to_plcae,
-                combine_transport_status:
-                  cards[firstGuestIndex].combine_transport_status,
-              },
-              {
-                event_id: "",
-                guest_id: guestIdsArray[secondGuestIndex],
-                is_alone: false,
-                pair_with1: guestIdsArray[firstGuestIndex],
-                pair_with2: guestIdsArray[thirdGuestIndex],
-                travel_type: cards[secondGuestIndex].travel_type,
-                vehicle_type: cards[secondGuestIndex].vehicle_type,
-                t_arrival_at: formatDateTime(
-                  cards[secondGuestIndex].t_arrival_at
-                ),
-                t_departure_at: formatDateTime(
-                  cards[secondGuestIndex].t_depature_at
-                ),
-                from_place: cards[secondGuestIndex].from_place,
-                to_place: cards[secondGuestIndex].to_place,
-                r_from_place: cards[secondGuestIndex].r_from_plcae,
-                r_to_place: cards[secondGuestIndex].r_to_plcae,
-                combine_transport_status:
-                  cards[secondGuestIndex].combine_transport_status,
-              },
-              {
-                event_id: "",
-                guest_id: guestIdsArray[thirdGuestIndex],
-                is_alone: false,
-                pair_with1: guestIdsArray[firstGuestIndex],
-                pair_with2: guestIdsArray[secondGuestIndex],
-                travel_type: cards[thirdGuestIndex].travel_type,
-                vehicle_type: cards[thirdGuestIndex].vehicle_type,
-                t_arrival_at: formatDateTime(
-                  cards[thirdGuestIndex].t_arrival_at
-                ),
-                t_departure_at: formatDateTime(
-                  cards[thirdGuestIndex].t_depature_at
-                ),
-                from_place: cards[thirdGuestIndex].from_place,
-                to_place: cards[thirdGuestIndex].to_place,
-                r_from_place: cards[thirdGuestIndex].r_from_plcae,
-                r_to_place: cards[thirdGuestIndex].r_to_plcae,
-                combine_transport_status:
-                  cards[thirdGuestIndex].combine_transport_status,
-              }
-            );
-          } else if (preference.length === 2) {
-            // Two-member pairing logic
+        mergearray.forEach((preference, index) => {
+          if (Array.isArray(preference)) {
+            // Pairing logic
             const [firstGuestIndex, secondGuestIndex] = preference.map(
               (p) => p - 1
             );
 
-            CombineTransportData.push(
+            CombineAccommodationData.push(
               {
                 event_id: "",
                 guest_id: guestIdsArray[firstGuestIndex],
                 is_alone: false,
-                pair_with1: guestIdsArray[secondGuestIndex],
-                pair_with2: null,
-                travel_type: cards[firstGuestIndex].travel_type,
-                vehicle_type: cards[firstGuestIndex].vehicle_type,
-                t_arrival_at: formatDateTime(
-                  cards[firstGuestIndex].t_arrival_at
-                ),
-                t_departure_at: formatDateTime(
-                  cards[firstGuestIndex].t_depature_at
-                ),
-                from_place: cards[firstGuestIndex].from_place,
-                to_place: cards[firstGuestIndex].to_place,
-                r_from_place: cards[firstGuestIndex].r_from_plcae,
-                r_to_place: cards[firstGuestIndex].r_to_plcae,
-                combine_transport_status:
-                  cards[firstGuestIndex].combine_transport_status,
+                pair_with: guestIdsArray[secondGuestIndex],
+                arrival_at: formatDateTime(cards[firstGuestIndex].arrival_at), // Formatting arrival_at
+                departure_at: formatDateTime(
+                  cards[firstGuestIndex].departure_at
+                ), // Formatting departure_at
+                accommodation_venue: cards[firstGuestIndex].accommodation_venue, // Adding accommodation_venue
+                combine_accommodation_status:
+                  cards[firstGuestIndex].combine_accommodation_status,
               },
               {
                 event_id: "",
                 guest_id: guestIdsArray[secondGuestIndex],
                 is_alone: false,
-                pair_with1: guestIdsArray[firstGuestIndex],
-                pair_with2: null,
-                travel_type: cards[secondGuestIndex].travel_type,
-                vehicle_type: cards[secondGuestIndex].vehicle_type,
-                t_arrival_at: formatDateTime(
-                  cards[secondGuestIndex].t_arrival_at
-                ),
-                t_departure_at: formatDateTime(
-                  cards[secondGuestIndex].t_depature_at
-                ),
-                from_place: cards[secondGuestIndex].from_place,
-                to_place: cards[secondGuestIndex].to_place,
-                r_from_place: cards[secondGuestIndex].r_from_plcae,
-                r_to_place: cards[secondGuestIndex].r_to_plcae,
-                combine_transport_status:
-                  cards[secondGuestIndex].combine_transport_status,
+                pair_with: guestIdsArray[firstGuestIndex],
+                arrival_at: formatDateTime(cards[secondGuestIndex].arrival_at), // Formatting arrival_at
+                departure_at: formatDateTime(
+                  cards[secondGuestIndex].departure_at
+                ), // Formatting departure_at
+                accommodation_venue:
+                  cards[secondGuestIndex].accommodation_venue, // Adding accommodation_venue
+                combine_accommodation_status:
+                  cards[secondGuestIndex].combine_accommodation_status,
               }
             );
+          } else {
+            // Alone logic
+            const guestIndex = preference - 1;
+            CombineAccommodationData.push({
+              event_id: "",
+              guest_id: guestIdsArray[guestIndex],
+              is_alone: true,
+              pair_with: null,
+              arrival_at: formatDateTime(cards[guestIndex].arrival_at), // Formatting arrival_at
+              departure_at: formatDateTime(cards[guestIndex].departure_at), // Formatting departure_at
+              accommodation_venue: cards[guestIndex].accommodation_venue, // Adding accommodation_venue
+              combine_accommodation_status:
+                cards[guestIndex].combine_accommodation_status,
+            });
           }
-        } else {
-          // Alone logic
-          const guestIndex = preference - 1;
-          CombineTransportData.push({
-            event_id: "",
-            guest_id: guestIdsArray[guestIndex],
-            is_alone: true,
-            pair_with1: null,
-            pair_with2: null,
-            travel_type: cards[guestIndex].travel_type,
-            vehicle_type: cards[guestIndex].vehicle_type,
-            t_arrival_at: formatDateTime(cards[guestIndex].t_arrival_at),
-            t_departure_at: formatDateTime(cards[guestIndex].t_depature_at),
-            from_place: cards[guestIndex].from_place,
-            to_place: cards[guestIndex].to_place,
-            r_from_place: cards[guestIndex].r_from_plcae,
-            r_to_place: cards[guestIndex].r_to_plcae,
-            combine_transport_status:
-              cards[guestIndex].combine_transport_status,
-          });
-        }
-      });
+        });
 
-      const updatedCombineTransportData = CombineTransportData.map((data) => ({
-        ...data,
-        event_id: event_id,
-      }));
-      // console.log("transport Data:", updatedCombineTransportData);
+        const updatedCombineAccommodation = CombineAccommodationData.map(
+          (data) => ({
+            ...data,
+            event_id: event_id,
+          })
+        );
+        // console.log("Accommodation Data:", updatedCombineAccommodation);
 
-      const CombineTransportResponse = await axios.post(
-        "http://localhost:8000/post/combinetransport",
-        updatedCombineTransportData
-      );
+        const CombineAccommodationResponse = await axios.post(
+          "http://localhost:8000/post/combineaccommodation",
+          updatedCombineAccommodation
+        );
 
-      const guest_count = guestIdsArray.length;
+        const unsortedCombineAccommodationIdArray =
+          CombineAccommodationResponse.data.CombineAccommodation_id;
+        const CombineAccommodationIdArray = unsortedCombineAccommodationIdArray
+          .slice()
+          .sort((a, b) => a - b);
+        // console.log(CombineAccommodationIdArray);
+
+
+        const CombineTransportData = [];
+
+        transportmergearray.forEach((preference, index) => {
+          if (Array.isArray(preference)) {
+            if (preference.length === 3) {
+              // Three-member pairing logic
+              const [firstGuestIndex, secondGuestIndex, thirdGuestIndex] =
+                preference.map((p) => p - 1);
+
+              CombineTransportData.push(
+                {
+                  event_id: "",
+                  guest_id: guestIdsArray[firstGuestIndex],
+                  is_alone: false,
+                  pair_with1: guestIdsArray[secondGuestIndex],
+                  pair_with2: guestIdsArray[thirdGuestIndex],
+                  travel_type: cards[firstGuestIndex].travel_type,
+                  vehicle_type: cards[firstGuestIndex].vehicle_type,
+                  t_arrival_at: formatDateTime(
+                    cards[firstGuestIndex].t_arrival_at
+                  ),
+                  t_departure_at: formatDateTime(
+                    cards[firstGuestIndex].t_depature_at
+                  ),
+                  from_place: cards[firstGuestIndex].from_place,
+                  to_place: cards[firstGuestIndex].to_place,
+                  r_from_place: cards[firstGuestIndex].r_from_plcae,
+                  r_to_place: cards[firstGuestIndex].r_to_plcae,
+                  combine_transport_status:
+                    cards[firstGuestIndex].combine_transport_status,
+                },
+                {
+                  event_id: "",
+                  guest_id: guestIdsArray[secondGuestIndex],
+                  is_alone: false,
+                  pair_with1: guestIdsArray[firstGuestIndex],
+                  pair_with2: guestIdsArray[thirdGuestIndex],
+                  travel_type: cards[secondGuestIndex].travel_type,
+                  vehicle_type: cards[secondGuestIndex].vehicle_type,
+                  t_arrival_at: formatDateTime(
+                    cards[secondGuestIndex].t_arrival_at
+                  ),
+                  t_departure_at: formatDateTime(
+                    cards[secondGuestIndex].t_depature_at
+                  ),
+                  from_place: cards[secondGuestIndex].from_place,
+                  to_place: cards[secondGuestIndex].to_place,
+                  r_from_place: cards[secondGuestIndex].r_from_plcae,
+                  r_to_place: cards[secondGuestIndex].r_to_plcae,
+                  combine_transport_status:
+                    cards[secondGuestIndex].combine_transport_status,
+                },
+                {
+                  event_id: "",
+                  guest_id: guestIdsArray[thirdGuestIndex],
+                  is_alone: false,
+                  pair_with1: guestIdsArray[firstGuestIndex],
+                  pair_with2: guestIdsArray[secondGuestIndex],
+                  travel_type: cards[thirdGuestIndex].travel_type,
+                  vehicle_type: cards[thirdGuestIndex].vehicle_type,
+                  t_arrival_at: formatDateTime(
+                    cards[thirdGuestIndex].t_arrival_at
+                  ),
+                  t_departure_at: formatDateTime(
+                    cards[thirdGuestIndex].t_depature_at
+                  ),
+                  from_place: cards[thirdGuestIndex].from_place,
+                  to_place: cards[thirdGuestIndex].to_place,
+                  r_from_place: cards[thirdGuestIndex].r_from_plcae,
+                  r_to_place: cards[thirdGuestIndex].r_to_plcae,
+                  combine_transport_status:
+                    cards[thirdGuestIndex].combine_transport_status,
+                }
+              );
+            } else if (preference.length === 2) {
+              // Two-member pairing logic
+              const [firstGuestIndex, secondGuestIndex] = preference.map(
+                (p) => p - 1
+              );
+
+              CombineTransportData.push(
+                {
+                  event_id: "",
+                  guest_id: guestIdsArray[firstGuestIndex],
+                  is_alone: false,
+                  pair_with1: guestIdsArray[secondGuestIndex],
+                  pair_with2: null,
+                  travel_type: cards[firstGuestIndex].travel_type,
+                  vehicle_type: cards[firstGuestIndex].vehicle_type,
+                  t_arrival_at: formatDateTime(
+                    cards[firstGuestIndex].t_arrival_at
+                  ),
+                  t_departure_at: formatDateTime(
+                    cards[firstGuestIndex].t_depature_at
+                  ),
+                  from_place: cards[firstGuestIndex].from_place,
+                  to_place: cards[firstGuestIndex].to_place,
+                  r_from_place: cards[firstGuestIndex].r_from_plcae,
+                  r_to_place: cards[firstGuestIndex].r_to_plcae,
+                  combine_transport_status:
+                    cards[firstGuestIndex].combine_transport_status,
+                },
+                {
+                  event_id: "",
+                  guest_id: guestIdsArray[secondGuestIndex],
+                  is_alone: false,
+                  pair_with1: guestIdsArray[firstGuestIndex],
+                  pair_with2: null,
+                  travel_type: cards[secondGuestIndex].travel_type,
+                  vehicle_type: cards[secondGuestIndex].vehicle_type,
+                  t_arrival_at: formatDateTime(
+                    cards[secondGuestIndex].t_arrival_at
+                  ),
+                  t_departure_at: formatDateTime(
+                    cards[secondGuestIndex].t_depature_at
+                  ),
+                  from_place: cards[secondGuestIndex].from_place,
+                  to_place: cards[secondGuestIndex].to_place,
+                  r_from_place: cards[secondGuestIndex].r_from_plcae,
+                  r_to_place: cards[secondGuestIndex].r_to_plcae,
+                  combine_transport_status:
+                    cards[secondGuestIndex].combine_transport_status,
+                }
+              );
+            }
+          } else {
+            // Alone logic
+            const guestIndex = preference - 1;
+            CombineTransportData.push({
+              event_id: "",
+              guest_id: guestIdsArray[guestIndex],
+              is_alone: true,
+              pair_with1: null,
+              pair_with2: null,
+              travel_type: cards[guestIndex].travel_type,
+              vehicle_type: cards[guestIndex].vehicle_type,
+              t_arrival_at: formatDateTime(cards[guestIndex].t_arrival_at),
+              t_departure_at: formatDateTime(cards[guestIndex].t_depature_at),
+              from_place: cards[guestIndex].from_place,
+              to_place: cards[guestIndex].to_place,
+              r_from_place: cards[guestIndex].r_from_plcae,
+              r_to_place: cards[guestIndex].r_to_plcae,
+              combine_transport_status:
+                cards[guestIndex].combine_transport_status,
+            });
+          }
+        });
+
+        const updatedCombineTransportData = CombineTransportData.map(
+          (data) => ({
+            ...data,
+            event_id: event_id,
+          })
+        );
+        // console.log("transport Data:", updatedCombineTransportData);
+
+        const CombineTransportResponse = await axios.post(
+          "http://localhost:8000/post/combinetransport",
+          updatedCombineTransportData
+        );
+      
+      let guest_count = 0;
+
+      if (cards[0].guest_status === 1) {
+        guest_count = guestIdsArray.length;
+      } else {
+        guest_count = 0;
+      }
       // console.log("Total Guests Count:", guest_count);
 
       const updatedInviteesData = {
@@ -531,80 +541,91 @@ const TreeStructure = () => {
         event_id,
         invitees_id,
       };
+      if (participantsData.participants_status === 1) {
+        const participantsResponse = await axios.post(
+          "http://localhost:8000/post/participants",
+          updatedParticipants
+        );
+        const participants_id = participantsResponse.data.Participant_id;
+        // console.log("Created Participants with ID:", participants_id);
+      }
 
-      const participantsResponse = await axios.post(
-        "http://localhost:8000/post/participants",
-        updatedParticipants
-      );
-      const participants_id = participantsResponse.data.Participant_id;
-      // console.log("Created Participants with ID:", participants_id);
+      if (VenueData.venue_register_status === 1) {
+        const updatedVenue = {
+          ...VenueData,
+          event_id,
+        };
 
-      const updatedVenue = {
-        ...VenueData,
-        event_id,
-      };
+        const venueResponse = await axios.post(
+          "http://localhost:8000/post/venueregister",
+          updatedVenue
+        );
+        const venue_id = venueResponse.data.VenueBooking_id;
+        // console.log("Created Venue Booking with ID:", venue_id);
+      }
 
-      const venueResponse = await axios.post(
-        "http://localhost:8000/post/venueregister",
-        updatedVenue
-      );
-      const venue_id = venueResponse.data.VenueBooking_id;
-      // console.log("Created Venue Booking with ID:", venue_id);
+      if (quantities.venue_requirement_status === 1) {
+        const updatedVenueRequirement = {
+          ...quantities,
+          event_id,
+          venue_id,
+        };
 
-      const updatedVenueRequirement = {
-        ...quantities,
-        event_id,
-        venue_id,
-      };
+        const venueRequirementResponse = await axios.post(
+          "http://localhost:8000/post/venuerequirement",
+          updatedVenueRequirement
+        );
+        const VenueRequirement_id =
+          venueRequirementResponse.data.VenueRequirement_id;
+        // console.log("Created Venue Booking with ID:", VenueRequirement_id);
+      }
 
-      const venueRequirementResponse = await axios.post(
-        "http://localhost:8000/post/venuerequirement",
-        updatedVenueRequirement
-      );
-      const VenueRequirement_id =
-        venueRequirementResponse.data.VenueRequirement_id;
-      // console.log("Created Venue Booking with ID:", VenueRequirement_id);
+      if (soupData.food_request_status === 1) {
+        const updatedsoupData = {
+          ...soupData,
+          time: formatDateTime(soupData.time),
+          event_id,
+        };
 
-      const updatedsoupData = {
-        ...soupData,
-        time: formatDateTime(soupData.time),
-        event_id,
-      };
+        const soupDataResponse = await axios.post(
+          "http://localhost:8000/post/foodrequest",
+          updatedsoupData
+        );
+        const soupData_id = soupDataResponse.data.food_request_id;
+        // console.log("Created Food Request with ID:", soupData_id);
+      }
 
-      const soupDataResponse = await axios.post(
-        "http://localhost:8000/post/foodrequest",
-        updatedsoupData
-      );
-      const soupData_id = soupDataResponse.data.food_request_id;
-      // console.log("Created Food Request with ID:", soupData_id);
+      if (carData.car_request_status === 1) {
+        const updatedcarData = {
+          ...carData,
+          arrival_at: formatDateTime(carData.arrival_at),
+          depature_at: formatDateTime(carData.depature_at),
+          event_id,
+        };
 
-      const updatedcarData = {
-        ...carData,
-        arrival_at: formatDateTime(carData.arrival_at),
-        depature_at: formatDateTime(carData.depature_at),
-        event_id,
-      };
+        const carDataResponse = await axios.post(
+          "http://localhost:8000/post/car-request",
+          updatedcarData
+        );
+        const carData_id = carDataResponse.data.car_request_id;
+        // console.log("Created Car Request with ID:", carData_id);
+      }
 
-      const carDataResponse = await axios.post(
-        "http://localhost:8000/post/car-request",
-        updatedcarData
-      );
-      const carData_id = carDataResponse.data.car_request_id;
-      // console.log("Created Car Request with ID:", carData_id);
+      if (fastfoodData.refreshment_request_status === 1) {
+        const updatedRefreshmentData = {
+          ...fastfoodData,
+          time: formatDateTime(fastfoodData.time),
+          event_id,
+        };
 
-      const updatedRefreshmentData = {
-        ...fastfoodData,
-        time: formatDateTime(fastfoodData.time),
-        event_id,
-      };
-
-      const RefreshmentDataResponse = await axios.post(
-        "http://localhost:8000/post/refreshmentrequest",
-        updatedRefreshmentData
-      );
-      const RefreshmentData_id =
-        RefreshmentDataResponse.data.refreshment_request_id;
-      // console.log("Created Refreshment Request with ID:", RefreshmentData_id);
+        const RefreshmentDataResponse = await axios.post(
+          "http://localhost:8000/post/refreshmentrequest",
+          updatedRefreshmentData
+        );
+        const RefreshmentData_id =
+          RefreshmentDataResponse.data.refreshment_request_id;
+        // console.log("Created Refreshment Request with ID:", RefreshmentData_id);
+      }
 
       /** Final Step: Success Alert **/
       toast.success("Event created successfully!");
@@ -792,159 +813,147 @@ const TreeStructure = () => {
             }}
           >
             <SpecialRequest
-            soupData={soupData}
-            setSoupData={setSoupData}
-            carData={carData}
-            setCarData={setCarData}
-            fastfoodData={fastfoodData}
-            setFastfoodData={setFastfoodData}
+              soupData={soupData}
+              setSoupData={setSoupData}
+              carData={carData}
+              setCarData={setCarData}
+              fastfoodData={fastfoodData}
+              setFastfoodData={setFastfoodData}
             />
           </div>
-        
-        <div
-          className="confirmsubmit pr-6  bg-white"
-          style={{ display: "flex", justifyContent: "end" }}
-        >
-          <div
-            onClick={(e) => {
-              if (!isConfirmEnabled()) {
-                e.preventDefault(); // Prevents any action if not enabled
-                return;
-              }
-              confirm();
-            }}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              marginRight: "8px",
-              backgroundColor: isConfirmEnabled() ? "#4CAF50" : "gray", // Green if enabled, gray if disabled
-              color: "white",
-              cursor: isConfirmEnabled() ? "pointer" : "not-allowed", // Change cursor to cancel icon if not enabled
-              // Removed pointerEvents to ensure cursor style is applied
-            }}
-            disabled={loading}
-          >
-            {loading ? "Submitting..." : "Confirm"}
-          </div>
 
           <div
-            style={{
-              padding: "8px",
-              borderRadius: "5px",
-              backgroundColor: "gray",
-              marginRight: "8px",
-              color: "white",
-            }}
-            type="submit"
+            className="confirmsubmit pr-6  bg-white"
+            style={{ display: "flex", justifyContent: "end" }}
           >
-            Re-Request
-          </div>
-
-          <div>
             <div
-              type="submit"
+              onClick={(e) => {
+                if (!isConfirmEnabled()) {
+                  e.preventDefault(); // Prevents any action if not enabled
+                  return;
+                }
+                confirm();
+              }}
+              style={{
+                padding: "8px",
+                borderRadius: "4px",
+                marginRight: "8px",
+                backgroundColor: isConfirmEnabled() ? "#4CAF50" : "gray", // Green if enabled, gray if disabled
+                color: "white",
+                cursor: isConfirmEnabled() ? "pointer" : "not-allowed", // Change cursor to cancel icon if not enabled
+                // Removed pointerEvents to ensure cursor style is applied
+              }}
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Confirm"}
+            </div>
+
+            <div
               style={{
                 padding: "8px",
                 borderRadius: "5px",
-                backgroundColor: "#2D5DD9",
+                backgroundColor: "gray",
                 marginRight: "8px",
                 color: "white",
-                cursor: "pointer", // Add cursor pointer for better UX
               }}
-              onClick={handleGoBackClick}
+              type="submit"
             >
-              Go Back
+              Re-Request
             </div>
 
-            {showPopup && (
+            <div>
               <div
+                type="submit"
                 style={{
-                  position: "fixed",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  backgroundColor: "white",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-                  zIndex: 1000,
+                  padding: "8px",
+                  borderRadius: "5px",
+                  backgroundColor: "#2D5DD9",
+                  marginRight: "8px",
+                  color: "white",
+                  cursor: "pointer", // Add cursor pointer for better UX
                 }}
+                onClick={handleGoBackClick}
               >
-                <p>All data will be erased. Are you sure?</p>
-
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <img
-                    src={myGif}
-                    alt="My GIF"
-                    style={{ width: "150px", height: "150px" }}
-                  />
-                </div>
-                <div style={{ display: "flex", justifyContent: "end" }}>
-                  <div
-                    style={{
-                      padding: "8px",
-                      borderRadius: "5px",
-                      backgroundColor: "#2D5DD9",
-                      marginRight: "8px",
-                      color: "white",
-                      cursor: "pointer", // Add cursor pointer for better UX
-                    }}
-                    onClick={handleGoBackConfirm}
-                  >
-                    OK
-                  </div>
-
-                  <div
-                    style={{
-                      padding: "8px",
-                      borderRadius: "5px",
-                      backgroundColor: "gray",
-                      marginRight: "8px",
-                      color: "white",
-                    }}
-                    onClick={handleGoBackCancel}
-                  >
-                    Cancel
-                  </div>
-                </div>
+                Go Back
               </div>
-            )}
 
-            {showPopup && (
-              <div
-                style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  zIndex: 999,
-                }}
-                onClick={handleGoBackCancel}
-              />
-            )}
+              {showPopup && (
+                <div
+                  style={{
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "white",
+                    padding: "20px",
+                    borderRadius: "10px",
+                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                    zIndex: 1000,
+                  }}
+                >
+                  <p>All data will be erased. Are you sure?</p>
+
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <img
+                      src={myGif}
+                      alt="My GIF"
+                      style={{ width: "150px", height: "150px" }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "end" }}>
+                    <div
+                      style={{
+                        padding: "8px",
+                        borderRadius: "5px",
+                        backgroundColor: "#2D5DD9",
+                        marginRight: "8px",
+                        color: "white",
+                        cursor: "pointer", // Add cursor pointer for better UX
+                      }}
+                      onClick={handleGoBackConfirm}
+                    >
+                      OK
+                    </div>
+
+                    <div
+                      style={{
+                        padding: "8px",
+                        borderRadius: "5px",
+                        backgroundColor: "gray",
+                        marginRight: "8px",
+                        color: "white",
+                      }}
+                      onClick={handleGoBackCancel}
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {showPopup && (
+                <div
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    zIndex: 999,
+                  }}
+                  onClick={handleGoBackCancel}
+                />
+              )}
+            </div>
           </div>
         </div>
-        
-        </div>
-
-
-
-
-
-
       </div>
     </div>
   );
 };
 
-
-
-
-
-
-const treeRendering = (     
+const treeRendering = (
   treeData,
   handleBoxClick,
   colorMap,
@@ -1020,14 +1029,12 @@ const treeRendering = (
                   </div>
                 )}
 
-
-                
                 <img
                   src={item.image}
                   alt={item.id}
                   style={{
                     // zIndex: 2,
-                    position: "relative",   
+                    position: "relative",
                     left: item.id === "Invitees" ? "15px" : "9px",
 
                     width: item.id === "Invitees" ? "70px" : "", // Reduce size only for Invitees
@@ -1035,7 +1042,6 @@ const treeRendering = (
                     height: item.id === "Invitees" ? "auto" : "", // Adjust height to maintain aspect ratio
                   }}
                 />
-
 
                 <h6
                   className="flowname"
@@ -1063,7 +1069,6 @@ const treeRendering = (
     </>
   );
 };
-
 
 // const treeRendering = (
 //   treeData,
@@ -1174,7 +1179,7 @@ const treeRendering = (
 //                   alt={item.id}
 //                   style={{
 //                     // zIndex: 2,
-//                     position: "relative",   
+//                     position: "relative",
 //                     left: item.id === "Invitees" ? "15px" : "9px",
 
 //                     width: item.id === "Invitees" ? "70px" : "", // Reduce size only for Invitees
@@ -1210,6 +1215,5 @@ const treeRendering = (
 //     </>
 //   );
 // };
-
 
 export default TreeStructure;

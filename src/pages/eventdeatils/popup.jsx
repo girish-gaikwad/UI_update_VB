@@ -3,7 +3,13 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 
-const Popup = ({ closePopup, selectedItem }) => {
+const Popup = ({
+  closePopup,
+  selectedItem,
+  event,
+  GuestData,
+  SpecialRequestData,
+}) => {
   const [inputVisible, setInputVisible] = useState(false);
   const [counter, setCounter] = useState(1);
   const [inputValue, setInputValue] = useState("");
@@ -31,6 +37,7 @@ const Popup = ({ closePopup, selectedItem }) => {
       setInputValue("");
     }
   };
+console.log(items);
 
   const renderPopupContent = () => {
     switch (selectedItem.id) {
@@ -136,10 +143,10 @@ const Popup = ({ closePopup, selectedItem }) => {
               <p>1.</p>
               <p className="w-[180px] border">
                 Mr. Girish ashok gaikwad
-<p className="text-xs text-center mt-1">16/06/2006 to 18/06/2006</p>
-
+                <p className="text-xs text-center mt-1">
+                  16/06/2006 to 18/06/2006
+                </p>
               </p>
-
 
               <div className=" border p-1 w-6 h-6 rounded-lg bg-[#5b00a9]">
                 <BsFillPeopleFill className="text-white" />
@@ -156,10 +163,11 @@ const Popup = ({ closePopup, selectedItem }) => {
 
             <div className="flex border my-3 justify-around items-center">
               <p>1.</p>
-              <p className="w-[180px] border">Mr.Girish gaikwad
-
-              <p className="text-xs text-center mt-1">16/06/2006 to 18/06/2006</p>
-
+              <p className="w-[180px] border">
+                Mr.Girish gaikwad
+                <p className="text-xs text-center mt-1">
+                  16/06/2006 to 18/06/2006
+                </p>
               </p>
               <div className="border-[#004b93] border-2  w-6 h-6 rounded-lg  justify-center items-center flex ">
                 <IoPerson className="text-[#004b93]" />
@@ -175,8 +183,6 @@ const Popup = ({ closePopup, selectedItem }) => {
             </div>
           </div>
         );
-
-
 
       case "Transport":
         return (
@@ -216,15 +222,17 @@ const Popup = ({ closePopup, selectedItem }) => {
               </button>
             </div>
           </div>
-        )
+        );
       case "Guest":
         return (
           <div className="w-[400px] min-w-[350px]  rounded-xl bg-white ">
-            <p className="text-center mt-4"> Wan to Remove Guest   ?</p>
+            <p className="text-center mt-4"> Wan to Remove Guest ?</p>
 
             <div className="flex border my-3 justify-around items-center">
               <p>1.</p>
-              <p className="w-[200px] border-2 p-2 rounded-lg border-[#2b3770]">Mr. Girish ashok gaikwad</p>
+              <p className="w-[200px] border-2 p-2 rounded-lg border-[#2b3770]">
+                Mr. Girish ashok gaikwad
+              </p>
 
               {/* <div className=" border p-1 w-6 h-6 rounded-lg bg-[#5b00a9]">
                 <BsFillPeopleFill className="text-white" />
@@ -240,7 +248,9 @@ const Popup = ({ closePopup, selectedItem }) => {
             </div>
             <div className="flex border my-3 justify-around items-center">
               <p>2.</p>
-              <p className="w-[200px] border-2 p-2 rounded-lg border-[#2b3770]">Mr. Girish   gaikwad</p>
+              <p className="w-[200px] border-2 p-2 rounded-lg border-[#2b3770]">
+                Mr. Girish gaikwad
+              </p>
 
               {/* <div className=" border p-1 w-6 h-6 rounded-lg bg-[#5b00a9]">
                 <BsFillPeopleFill className="text-white" />
@@ -254,10 +264,8 @@ const Popup = ({ closePopup, selectedItem }) => {
                 <FaTrash />
               </button>
             </div>
-
-           
           </div>
-        )
+        );
       default:
         return <p>General information about the selected item.</p>;
     }

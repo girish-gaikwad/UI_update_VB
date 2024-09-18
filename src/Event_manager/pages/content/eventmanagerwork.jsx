@@ -10,6 +10,7 @@ import Pending from "/images/pending-img.png";
 import InProgress from "/images/InProgress-img.png";
 import Assigned from "/images/Assigned-img.png";
 import Completed from "/images/Completed-img.png";
+import Attention from "/images/Attention-img.png";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -51,16 +52,9 @@ const formatDateTime = (dateTime) => {
   return `${date} - ${time}`;
 };
 
-function EVENTMANAGERWORK({
-  approvedEvents,
-  setApprovedEvents,
-  dummyData,
-  setSelectedEvent,
-}) {
-  const [events, setEvents] = useState(() =>
-    addRandomImagesToEvents(dummyData)
-  );
-
+function EVENTMANAGERWORK() {
+  const [events, setEvents] = useState([]); // Initialize with an empty array
+  const [error, setError] = useState(null); // State to handle error
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +63,7 @@ function EVENTMANAGERWORK({
       .then((response) => {
         const eventsWithImages = addRandomImagesToEvents(response.data);
         setEvents(eventsWithImages);
-        console.log(eventsWithImages);
+        // console.log(eventsWithImages);
       })
       .catch((error) => {
         console.error("Error fetching events:", error);
@@ -78,7 +72,6 @@ function EVENTMANAGERWORK({
   }, []);
 
   const handleViewClick = (event) => {
-    setSelectedEvent(event);
     navigate(`/registered-event/${event.event_id}`); // Navigate to event details page
   };
 
@@ -120,9 +113,9 @@ function EVENTMANAGERWORK({
         <CiSquareMore style={{ height: "30px", width: "30px" }} />
       </div>
       <div className="flex justify-end pb-1  border-b  bg-white">
-        <div className="flex w-full  text-[#728ebe]  justify-around ">
-          <p>faculty</p>
-          <p>start</p>
+        <div className="flex w-full text-[#728ebe] justify-around">
+          <p>Faculty</p>
+          <p>Start</p>
           <p className=" relative top-0 left-10">End</p>
           <p className=" relative top-0 left-24">Status</p>
           <p className="relative top-0 left-16">Action</p>
@@ -130,14 +123,8 @@ function EVENTMANAGERWORK({
       </div>
 
       <div className="w-full h-full bg-white overflow-y-auto scrollbar-none">
-
-
         {Object.keys(groupedEvents).map((dateLabel) => (
-
-
-
           <div key={dateLabel} className="w-full  py-4 px-4  ">
-
             <div className="w-full flex justify-between items-center">
               <p className="text-[#2d5dd9]">{dateLabel}</p>
               <p className="text-gray-600">
@@ -147,16 +134,12 @@ function EVENTMANAGERWORK({
 
             <div className="border-[#e8e8e8] border px-2 rounded-lg ">
               <div className="w-full my-4">
-
-
                 {groupedEvents[dateLabel].map((event) => (
                   <div
                     key={event.id}
                     className="w-full bg-white border border-[#e8e8e8] flex mb-2  rounded-lg  p-2"
                   >
-
                     <div className="flex items-center w-[30%] ">
-
                       <img
                         src={event.image}
                         className="w-12 h-12 mr-4"
@@ -167,7 +150,6 @@ function EVENTMANAGERWORK({
                         <p className="text-[#728ebe]">{event.mobile_number}</p>
                       </div>
                     </div>
-
 
                     <div className=" w-full items-center  flex justify-between">
                       {/* <div className="mt-4 flex border w-[50%]"> */}
@@ -246,6 +228,18 @@ function EVENTMANAGERWORK({
                               </p>
                             );
                           }
+                          else if (statuses.some((status) => status === 4)) {
+                            return (
+                              <p className="text-gray-600">
+                                <img
+                                  src={Attention} // Replace with the appropriate icon for "Completed"
+                                  alt="Attention"
+                                  className="w-4 h-4 mr-2"
+                                />
+                                Attention
+                              </p>
+                            );
+                          }
                           return null;
                         })()}
                       </div>
@@ -261,19 +255,11 @@ function EVENTMANAGERWORK({
                     </div>
                   </div>
                 ))}
-
-
               </div>
             </div>
           </div>
         ))}
-
-
-
       </div>
-
-
-
     </div>
   );
 }

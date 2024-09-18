@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./infrawork.css";
 import { CiSquareMore } from "react-icons/ci";
 import Divider from "@mui/material/Divider";
@@ -9,6 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NAVX from "../../../pages/components/nav";
 import ClassroomDropdown from "./class";
+import axios from "axios";
 
 // Precomputed image selection function
 const getRandomImage = () => {
@@ -18,22 +19,79 @@ const getRandomImage = () => {
 
 // Add random images to dummyData
 const addRandomImagesToEvents = (data) => {
-  return {
-    tomorrow: data.tomorrow.map((event) => ({
-      ...event,
-      image: getRandomImage(),
-    })),
-    oneDayAgo: data.oneDayAgo.map((event) => ({
-      ...event,
-      image: getRandomImage(),
-    })),
+  return data.map((event) => ({
+    ...event,
+    image: getRandomImage(),
+  }));
+};
+
+const formatDateTime = (dateTime) => {
+  const dateObj = new Date(dateTime);
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   };
+
+  // Format date as DD-MM-YYYY
+  const date = dateObj.toLocaleDateString("en-GB", options).replace(/\//g, "-");
+
+  const hours = dateObj.getHours();
+  const minutes = dateObj.getMinutes();
+  const ampm = hours >= 12 ? "pm" : "am";
+  const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour clock
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  const time = `${formattedHours}:${formattedMinutes} ${ampm}`;
+
+  return `${date} - ${time}`;
 };
 
 function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
-  const [events, setEvents] = useState(() =>
-    addRandomImagesToEvents(dummyData)
-  );
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8000/get/admin`)
+      .then((response) => {
+        const eventsWithImages = addRandomImagesToEvents(response.data);
+        setEvents(eventsWithImages);
+        // console.log(eventsWithImages);
+      })
+      .catch((error) => {
+        console.error("Error fetching events:", error);
+        setError("503 Failed to Get Data");
+      });
+  }, []);
+
+  const groupEventsByDate = (events) => {
+    const groupedEvents = {};
+    const today = new Date().setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today + 24 * 60 * 60 * 1000);
+    const dayAfterTomorrow = new Date(today + 2 * 24 * 60 * 60 * 1000);
+
+    events.forEach((event) => {
+      const eventDate = new Date(event.start_at).setHours(0, 0, 0, 0);
+
+      if (eventDate === tomorrow.getTime()) {
+        if (!groupedEvents["Tomorrow"]) groupedEvents["Tomorrow"] = [];
+        groupedEvents["Tomorrow"].push(event);
+      } else if (eventDate === dayAfterTomorrow.getTime()) {
+        if (!groupedEvents["After 1 Day"]) groupedEvents["After 1 Day"] = [];
+        groupedEvents["After 1 Day"].push(event);
+      } else {
+        const eventDateLabel = new Date(eventDate)
+          .toLocaleDateString("en-GB")
+          .replace(/\//g, "-");
+        if (!groupedEvents[eventDateLabel]) groupedEvents[eventDateLabel] = [];
+        groupedEvents[eventDateLabel].push(event);
+      }
+    });
+
+    return groupedEvents;
+  };
+
+  const groupedEvents = groupEventsByDate(events);
 
   const handleButtonClick = (eventId, buttonIndex) => {
     const updatedEvents = { ...events };
@@ -63,7 +121,7 @@ function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
               event.button2Clicked &&
               event.button3Clicked
             ) {
-              setApprovedEvents((prev) => [...prev, event]);
+              // setApprovedEvents((prev) => [...prev, event]);
               return null;
             }
           }
@@ -96,163 +154,92 @@ function INFRAWORK({ approvedEvents, setApprovedEvents, dummyData }) {
       </div>
 
       <div className="w-full h-full bg-white overflow-y-auto scrollbar-none">
-        <div className="w-full  py-4 px-4  ">
-          <div className="w-full flex justify-between items-center">
-            {/* <p className="text-[#2d5dd9]">{dateLabel}</p> */}
-            <p className="text-[#2d5dd9]">Tommorrow</p>
-            <p className="text-gray-600">
-              {/* {groupedEvents[dateLabel].length} events */}3 events
-            </p>
-          </div>
+        {Object.keys(groupedEvents).map((dateLabel) => (
+          <div className="w-full  py-4 px-4  ">
+            <div className="w-full flex justify-between items-center">
+              {/* <p className="text-[#2d5dd9]">{dateLabel}</p> */}
+              <p className="text-[#2d5dd9]">{dateLabel}</p>
+              <p className="text-gray-600">
+                {groupedEvents[dateLabel].length} events events
+              </p>
+            </div>
 
-          <div className="border-[#e8e8e8] mb-3 border px-2 rounded-lg ">
-            <div className="w-full my-4">
-              {events.tomorrow.map((event) => (
-                <div
-                  key={event.id}
-                  className="w-full bg-white border border-[#e8e8e8] flex mb-2  rounded-lg  p-2"
-                >
-                  <div className="flex items-center w-[30%] ">
-                    {/* <div className="infrawork-random-img"> */}
-                    <img
-                      src={event.image}
-                      className="w-12 h-12 mr-4"
-                      alt="random"
-                    />
-                    {/* </div> */}
-                    <div>
-                      <p className="text-md ">{event.name}</p>
-                      <p className="text-[#728ebe]">{event.contact}</p>
-                    </div>
-                  </div>
-
-                  <div className=" w-full items-center  flex justify-between">
-                    <p className="text-gray-600"> {event.dateTime} </p>
-
-                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                      <div className="flex">
-                        <select className="bg-white w-full rounded-md">
-                          <option value="option1">Option 1</option>
-                          <option value="option2">Option 2</option>
-                          <option value="option3">Option 3</option>
-                        </select>
-                        <div
-                          className="infrawork-button-with-icon"
-                          onClick={() => handleButtonClick(event.id, 1)}
-                        >
-                          <i className="icon">
-                            <IoSendSharp size={20} />
-                          </i>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                      <div className="flex">
-                        <select className="bg-white w-full rounded-md">
-                          <option value="option1">Option 1</option>
-                          <option value="option2">Option 2</option>
-                          <option value="option3">Option 3</option>
-                        </select>
-                        <div
-                          className="infrawork-button-with-icon"
-                          onClick={() => handleButtonClick(event.id, 2)}
-                        >
-                          <i className="icon">
-                            <IoSendSharp size={20} />
-                          </i>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className=" border  border-[#c6c5c9] rounded-md">
-                      <ClassroomDropdown
-                        handleButtonClick={handleButtonClick}
-                        eventid={event.id}
+            <div className="border-[#e8e8e8] mb-3 border px-2 rounded-lg ">
+              <div className="w-full my-4">
+                {groupedEvents[dateLabel].map((event) => (
+                  <div
+                    key={event.id}
+                    className="w-full bg-white border border-[#e8e8e8] flex mb-2  rounded-lg  p-2"
+                  >
+                    <div className="flex items-center w-[30%] ">
+                      {/* <div className="infrawork-random-img"> */}
+                      <img
+                        src={event.image}
+                        className="w-12 h-12 mr-4"
+                        alt="random"
                       />
+                      {/* </div> */}
+                      <div>
+                        <p className="text-md ">{event.faculty_name}</p>
+                        <p className="text-[#728ebe]">{event.mobile_number}</p>
+                      </div>
+                    </div>
+
+                    <div className=" w-full items-center  flex justify-between">
+                      <p className="text-gray-600">
+                        {" "}
+                        {formatDateTime(event.start_at)}{" "}
+                      </p>
+
+                      <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                        <div className="flex">
+                          <select className="bg-white w-full rounded-md">
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                          </select>
+                          <div
+                            className="infrawork-button-with-icon"
+                            onClick={() => handleButtonClick(event.id, 1)}
+                          >
+                            <i className="icon">
+                              <IoSendSharp size={20} />
+                            </i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className=" border w-52 border-[#c6c5c9] rounded-md">
+                        <div className="flex">
+                          <select className="bg-white w-full rounded-md">
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                          </select>
+                          <div
+                            className="infrawork-button-with-icon"
+                            onClick={() => handleButtonClick(event.id, 2)}
+                          >
+                            <i className="icon">
+                              <IoSendSharp size={20} />
+                            </i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className=" border  border-[#c6c5c9] rounded-md">
+                        <ClassroomDropdown
+                          handleButtonClick={handleButtonClick}
+                          eventid={event.id}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-          <div className="border-[#e8e8e8] mb-3 border px-2 rounded-lg ">
-            <div className="w-full my-4">
-              {events.tomorrow.map((event) => (
-                <div
-                  key={event.id}
-                  className="w-full bg-white border border-[#e8e8e8] flex mb-2  rounded-lg  p-2"
-                >
-                  <div className="flex items-center w-[30%] ">
-                    {/* <div className="infrawork-random-img"> */}
-                    <img
-                      src={event.image}
-                      className="w-12 h-12 mr-4"
-                      alt="random"
-                    />
-                    {/* </div> */}
-                    <div>
-                      <p className="text-md ">{event.name}</p>
-                      <p className="text-[#728ebe]">{event.contact}</p>
-                    </div>
-                  </div>
-
-                  <div className=" w-full items-center  flex justify-between">
-                    <p className="text-gray-600"> {event.dateTime} </p>
-
-                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                      <div className="flex">
-                        <select className="bg-white w-full rounded-md">
-                          <option value="option1">Option 1</option>
-                          <option value="option2">Option 2</option>
-                          <option value="option3">Option 3</option>
-                        </select>
-                        <div
-                          className="infrawork-button-with-icon"
-                          onClick={() => handleButtonClick(event.id, 1)}
-                        >
-                          <i className="icon">
-                            <IoSendSharp size={20} />
-                          </i>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className=" border w-52 border-[#c6c5c9] rounded-md">
-                      <div className="flex">
-                        <select className="bg-white w-full rounded-md">
-                          <option value="option1">Option 1</option>
-                          <option value="option2">Option 2</option>
-                          <option value="option3">Option 3</option>
-                        </select>
-                        <div
-                          className="infrawork-button-with-icon"
-                          onClick={() => handleButtonClick(event.id, 2)}
-                        >
-                          <i className="icon">
-                            <IoSendSharp size={20} />
-                          </i>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className=" border  border-[#c6c5c9] rounded-md">
-                      <ClassroomDropdown
-                        handleButtonClick={handleButtonClick}
-                        eventid={event.id}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-
-
-
-        </div>
-
+        ))}
         {/* dummy for show  */}
       </div>
     </div>

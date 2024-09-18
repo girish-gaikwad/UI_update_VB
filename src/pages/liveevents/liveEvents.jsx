@@ -120,7 +120,7 @@ const LiveEvent = ({ setSelectedEvent }) => {
     // Add more events if needed...
   ];
 
-  console.log(eventx);
+  // console.log(eventx);
 
   return (
     <div className="flex  flex-col h-full p-3">
